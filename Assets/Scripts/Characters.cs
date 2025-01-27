@@ -17,10 +17,12 @@ public class Characters : MonoBehaviour
     
     [SerializeField] private Camera mainCamera;
     
-    [SerializeField] public string characterName;
-    
     [SerializeField] private GameObject nameplate;
     [SerializeField] private Vector3 offset = new Vector3(0, 1, 0);
+    
+    [HideInInspector] public string characterName = "Not Found";
+
+    private float randomNumber;
     
     private Renderer _renderer;
 
@@ -28,12 +30,35 @@ public class Characters : MonoBehaviour
     {
         _renderer = GetComponent<Renderer>();
         
-        Vector3 localOffset = this.transform.position + offset;
-        Instantiate(nameplate, localOffset, Quaternion.Euler(0,0,0), this.transform);
-        
+        InstantiateNameplate();
+    }
+    
+    
+    private void Update()
+    {
+        UpdateCharacterState();
     }
 
-    private void Update()
+
+    private void OnMouseDown()
+    {
+        if (Input.GetKey(KeyCode.Q) && state != State.Saved)
+        {
+            state = State.Killed;
+        }
+        if (Input.GetKey(KeyCode.E) && state != State.Killed)
+        {
+            state = State.Saved;
+        }
+    }
+    
+    private void InstantiateNameplate()
+    {
+        Vector3 localOffset = this.transform.position + offset;
+        Instantiate(nameplate, localOffset, Quaternion.Euler(0,0,0), this.transform);
+    }
+    
+    private void UpdateCharacterState()
     {
         switch (state)
         {
@@ -54,19 +79,6 @@ public class Characters : MonoBehaviour
                 break;
             
         }
-    }
-
-    private void OnMouseDown()
-    {
-        if (Input.GetKey(KeyCode.Q) && state != State.Saved)
-        {
-            state = State.Killed;
-        }
-        if (Input.GetKey(KeyCode.E) && state != State.Killed)
-        {
-            state = State.Saved;
-        }
-        
     }
     
 }
